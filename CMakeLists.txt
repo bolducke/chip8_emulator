@@ -5,7 +5,7 @@ message(${CMAKE_CURRENT_SOURCE_DIR})
 project(CHIP8 VERSION 1.0.0 DESCRIPTION "" LANGUAGES C CXX)
 set(PROJECT_NAME CHIP8)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_CURRENT_BINARY_DIR}>)
@@ -82,6 +82,56 @@ target_link_libraries(im-opengl3
     im-core
 )
 
+# im-club
+set(IMGUICLUB_PATH ${CMAKE_SOURCE_DIR}/extern/imgui_club)
+
+add_library(im-club
+  ${IMGUICLUB_PATH}/imgui_memory_editor/imgui_memory_editor.h
+)
+target_include_directories(im-club
+    PUBLIC
+    $<BUILD_INTERFACE:${IMGUICLUB_PATH}/imgui_memory_editor>
+    $<INSTALL_INTERFACE:imgui_memory_editor/imgui_memory_editor.h>
+)
+target_link_libraries(im-club
+    im-core
+)
+
+# im-filebrowser
+set(IMGUIADDONS_PATH ${CMAKE_SOURCE_DIR}/extern/ImGui-Addons/FileBrowser)
+
+add_library(im-addons
+  ${IMGUIADDONS_PATH}/ImGuiFileBrowser.cpp
+  ${IMGUIADDONS_PATH}/ImGuiFileBrowser.h
+  ${IMGUIADDONS_PATH}/Dirent/dirent.h
+
+)
+target_include_directories(im-addons
+    PUBLIC
+    $<BUILD_INTERFACE:${IMGUIADDONS_PATH}>
+    $<INSTALL_INTERFACE:ImGuiFileBrowser.h>
+    $<INSTALL_INTERFACE:Dirent/dirent.h>
+)
+target_link_libraries(im-addons
+    im-core
+)
+
+# fmt
+add_subdirectory(extern/fmt)
+
+# stb
+set(STB_PATH ${CMAKE_SOURCE_DIR}/extern/stb)
+add_library(stb
+  ${STB_PATH}/stb_image.h
+)
+set_target_properties(stb PROPERTIES LINKER_LANGUAGE CXX)
+
+target_include_directories(stb
+    PUBLIC
+    $<BUILD_INTERFACE:${STB_PATH}>
+    $<INSTALL_INTERFACE:stb_image.h>
+)
+
 # ============================================================================
 # SRC
 # ============================================================================
@@ -103,5 +153,9 @@ target_link_libraries(${PROJECT_NAME}
         im-core
         im-sdl2
         im-opengl3
+        im-club
+        im-addons
         SDL2::SDL2
+        fmt::fmt
+        stb
         )
