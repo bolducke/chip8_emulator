@@ -142,7 +142,7 @@ namespace chip8
         glTextureParameteri(tex_display, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTextureStorage2D(tex_display, 1, GL_R8, C8_DISPLAY_WIDTH, C8_DISPLAY_HEIGHT);
 
-        auto cycle_delay = 1.0f / 20.0f;
+        auto cycle_delay = 1.f/300.f;
         auto time_last_cycle = std::chrono::high_resolution_clock::now();
 
         while (!done)
@@ -181,8 +181,8 @@ namespace chip8
 
             if (running) {
                 auto time_curr = std::chrono::high_resolution_clock::now();
-                float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(time_curr - time_last_cycle).count();
-                
+                float dt = std::chrono::duration<float, std::chrono::seconds::period>(time_curr - time_last_cycle).count();
+
                 if (dt > cycle_delay)
                 {
                     time_last_cycle = time_curr;
@@ -245,7 +245,20 @@ namespace chip8
                 im_display_edit.DrawWindow("Display", &app.emulator.display, C8_DISPLAY_WIDTH * C8_DISPLAY_HEIGHT, 0);
             }
 
-            // Others
+            // Meta
+            {
+                ImGui::Begin("Meta");
+                
+                // cycle_delay
+                {
+                    static float nb_cycles = 1. / cycle_delay;
+                    if (ImGui::InputFloat("Cycles/Secs", &nb_cycles)) {
+                        cycle_delay = 1. / nb_cycles;
+                    }
+                }
+            }
+
+            // Dynamic State
             {
                 ImGui::Begin("Dynamic State");
 
