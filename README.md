@@ -4,4 +4,4 @@ More information on the project (here)[https://bolducke.github.io/projects/].
 
 ## Build
 
-Use the classical step to setup a CMAKE project.
+Follow the classical step to build a CMake project in C++. CMake has only been tested on linux.
